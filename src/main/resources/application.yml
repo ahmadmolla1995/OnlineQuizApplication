@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost/OnlineQuiz?createDatabaseIfNotExist=true&useSSL=false&useUnicode=yes&characterEncoding=UTF-8&characterSetResults=UTF-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        connection:
+          characterEncoding: utf-8
+          CharSet: utf-8
+          useUnicode: true
+  http:
+    encoding:
+      charset: UTF-8
+
+server:
+  port: 8080
