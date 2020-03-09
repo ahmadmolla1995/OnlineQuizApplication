@@ -14,13 +14,13 @@ public class Teacher extends Person {
     private Long teacherCode;
 
     @OneToMany(mappedBy = "teacher")
-    private Set<Course> courses = new HashSet<>();
+    private Set<Course> courses;
 
 
     public Teacher() {}
 
-    public Teacher(Long id, String firstName, String lastName, String nationalCode, String fatherName, Date birthDate, String education, String email, String homeNumber, String cellPhoneNumber, String address, Long teacherCode) {
-        super(id, firstName, lastName, nationalCode, fatherName, birthDate, education, email, homeNumber, cellPhoneNumber, address);
+    public Teacher(Long id, String firstName, String lastName, String education, String email, String homeNumber, String cellPhoneNumber, String address, Long teacherCode) {
+        super(id, firstName, lastName, education, email, homeNumber, cellPhoneNumber, address);
         this.teacherCode = teacherCode;
     }
 

@@ -1,9 +1,9 @@
 package ir.maktab.finalproject.onlinequizapplication.service;
 
-import ir.maktab.finalproject.onlinequizapplication.dto.PersonDTO;
+import ir.maktab.finalproject.onlinequizapplication.dto.PersonRegisterDTO;
 import ir.maktab.finalproject.onlinequizapplication.enumeration.AccountStatus;
 import ir.maktab.finalproject.onlinequizapplication.exception.AccountNotActivatedException;
-import ir.maktab.finalproject.onlinequizapplication.mapper.PersonDtoToPersonMapper;
+import ir.maktab.finalproject.onlinequizapplication.mapper.PersonRegisterDtoToPersonMapper;
 import ir.maktab.finalproject.onlinequizapplication.model.Account;
 import ir.maktab.finalproject.onlinequizapplication.model.Person;
 import ir.maktab.finalproject.onlinequizapplication.repository.AccountRepository;
@@ -18,12 +18,12 @@ public class PersonService {
         this.accountRepository = accountRepository;
     }
 
-
-    public void CompleteRegistration(PersonDTO personDTO) throws AccountNotActivatedException {
+/*
+    public void CompleteRegistration(PersonRegisterDTO personDTO) throws AccountNotActivatedException {
         Account account = accountRepository.findByUsername(personDTO.getUsername());
         if (account != null) {
             if (account.getAccountStatus().equals(AccountStatus.DISABLE)) {
-                Person person = PersonDtoToPersonMapper.mapper(personDTO, account.getPerson());
+                Person person = PersonRegisterDtoToPersonMapper.mapper(personDTO, account.getPerson());
 
                 account.setPerson(person);
                 account.setAccountStatus(AccountStatus.WAITING_CONFIRMATION);
@@ -32,4 +32,6 @@ public class PersonService {
             }
         }
     }
+ */
+
 }

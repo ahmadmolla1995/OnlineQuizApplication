@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Created-By: IntelliJ IDEA
+Built-By: Ahmad
+Build-Jdk: 10.0.1
+Implementation-Title: OnlineQuizApplication
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: ir.maktab.finalproject
+Main-Class: ${start-class}
+

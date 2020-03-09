@@ -25,19 +25,19 @@ public class Account {
     private Date createdDate;
     private Date lastLoginDate;
     private Boolean enable;
-
+    
     @OneToOne(cascade = CascadeType.ALL)
     private Person person = new Person();
 
     @ManyToMany
-    @JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
+    @JoinTable(name = "account_roles", joinColumns = @JoinColumn(name = "account_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     @Column(nullable = false)
     private Set<Role> roles = new HashSet<>();
 
 
     public Account() {}
 
-    public Account(Long id, String username, String password, AccountStatus accountStatus, Date createdDate, Date lastLoginDate, Boolean enable) {
+    public Account(Long id, String username, String password, Role role, AccountStatus accountStatus, Date createdDate, Date lastLoginDate, Boolean enable) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -45,12 +45,11 @@ public class Account {
         this.createdDate = createdDate;
         this.lastLoginDate = lastLoginDate;
         this.enable = enable;
+        this.roles.add(role);
     }
 
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
     public String getUsername() {
         return username;

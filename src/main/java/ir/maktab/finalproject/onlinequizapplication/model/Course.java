@@ -4,6 +4,7 @@ import ir.maktab.finalproject.onlinequizapplication.enumeration.CourseStatus;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -13,6 +14,7 @@ public class Course {
     private Long id;
 
     private Long courseCode;
+    private String title;
     private Date startDate;
     private Date endDate;
 
@@ -20,21 +22,18 @@ public class Course {
     private CourseStatus courseStatus;
 
     @ManyToOne
-    private Lesson lesson;
-
-    @ManyToOne
-    private Teacher teacher;
-
+    private Teacher teacher = new Teacher();
 
     @ManyToMany(mappedBy = "courses")
-    private Set<Student> students;
+    private Set<Student> students = new HashSet<>();
 
 
     public Course() {}
 
-    public Course(Long id, Long courseCode, Date startDate, Date endDate, CourseStatus courseStatus) {
+    public Course(Long id, Long courseCode, String title, Date startDate, Date endDate, CourseStatus courseStatus) {
         this.id = id;
         this.courseCode = courseCode;
+        this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
         this.courseStatus = courseStatus;
@@ -52,6 +51,10 @@ public class Course {
     public void setCourseCode(Long courseCode) {
         this.courseCode = courseCode;
     }
+
+    public String getTitle() { return title; }
+
+    public void setTitle(String title) { this.title = title; }
 
     public Date getStartDate() {
         return startDate;
@@ -73,14 +76,6 @@ public class Course {
 
     public void setCourseStatus(CourseStatus courseStatus) {
         this.courseStatus = courseStatus;
-    }
-
-    public Lesson getLesson() {
-        return lesson;
-    }
-
-    public void setLesson(Lesson lesson) {
-        this.lesson = lesson;
     }
 
     public Teacher getTeacher() {

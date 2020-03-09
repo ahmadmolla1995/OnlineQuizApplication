@@ -1,7 +1,8 @@
 package ir.maktab.finalproject.onlinequizapplication.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
-import java.util.Date;
 
 
 @Entity
@@ -12,14 +13,11 @@ public class Person {
 
     protected String firstName;
     protected String lastName;
-    protected String nationalCode;
-    protected String fatherName;
     protected String education;
     protected String email;
     protected String homeNumber;
     protected String cellPhoneNumber;
     protected String address;
-    protected Date birthDate;
 
     @OneToOne(mappedBy = "person")
     protected Account account;
@@ -27,13 +25,10 @@ public class Person {
 
     public Person() {}
 
-    public Person(Long id, String firstName, String lastName, String nationalCode, String fatherName, Date birthDate, String education, String email, String homeNumber, String cellPhoneNumber, String address) {
+    public Person(Long id, String firstName, String lastName, String education, String email, String homeNumber, String cellPhoneNumber, String address) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.nationalCode = nationalCode;
-        this.fatherName = fatherName;
-        this.birthDate = birthDate;
         this.education = education;
         this.email = email;
         this.homeNumber = homeNumber;
@@ -62,30 +57,6 @@ public class Person {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getNationalCode() {
-        return nationalCode;
-    }
-
-    public void setNationalCode(String nationalCode) {
-        this.nationalCode = nationalCode;
-    }
-
-    public String getFatherName() {
-        return fatherName;
-    }
-
-    public void setFatherName(String fatherName) {
-        this.fatherName = fatherName;
-    }
-
-    public Date getBirthDate() {
-        return birthDate;
-    }
-
-    public void setBirthDate(Date birthDate) {
-        this.birthDate = birthDate;
     }
 
     public String getEducation() {

@@ -1,21 +1,21 @@
 package ir.maktab.finalproject.onlinequizapplication.security;
 
-import ir.maktab.finalproject.onlinequizapplication.dto.UserLoginDTO;
+import ir.maktab.finalproject.onlinequizapplication.dto.PersonSignInCompletionDTO;
 
 
 public final class AuthenticationService {
-    private static UserLoginDTO userLoginDTO;
+    private static PersonSignInCompletionDTO personSignInCompletionDTO;
 
 
-    public static UserLoginDTO getLoginUser() {
-        return userLoginDTO;
+    public static PersonSignInCompletionDTO getLoginUser() {
+        return personSignInCompletionDTO;
     }
 
-    public static void setLoginUser(UserLoginDTO userLogin) {
-        userLoginDTO = userLogin;
+    public static void setLoginUser(PersonSignInCompletionDTO person) {
+        personSignInCompletionDTO = person;
     }
 
     public static void logoutUser() {
-        userLoginDTO = null;
+        personSignInCompletionDTO = null;
     }
 }

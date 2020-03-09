@@ -4,7 +4,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import java.util.Date;
 
 
 @Entity
@@ -17,8 +16,8 @@ public class Manager extends Person {
 
     public Manager() {}
 
-    public Manager(Long id, String firstName, String lastName, String nationalCode, String fatherName, Date birthDate, String education, String email, String homeNumber, String cellPhoneNumber, String address, Long managerCode) {
-        super(id, firstName, lastName, nationalCode, fatherName, birthDate, education, email, homeNumber, cellPhoneNumber, address);
+    public Manager(Long id, String firstName, String lastName, String education, String email, String homeNumber, String cellPhoneNumber, String address, Long managerCode) {
+        super(id, firstName, lastName, education, email, homeNumber, cellPhoneNumber, address);
         this.managerCode = managerCode;
     }
 

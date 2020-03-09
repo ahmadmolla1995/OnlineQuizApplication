@@ -2,12 +2,20 @@ package ir.maktab.finalproject.onlinequizapplication;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 
 
 @SpringBootApplication
-public class OnlineQuizApplication {
+public class OnlineQuizApplication extends SpringBootServletInitializer {
+    @Override
+    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+        return application.sources(OnlineQuizApplication.class);
+    }
+
     public static void main(String[] args) {
         SpringApplication.run(OnlineQuizApplication.class, args);
     }
+
 }
 

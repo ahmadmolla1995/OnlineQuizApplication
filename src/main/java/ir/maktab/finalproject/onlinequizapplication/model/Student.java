@@ -15,13 +15,13 @@ public class Student extends Person {
 
     @ManyToMany
     @JoinTable(name = "students_courses", joinColumns = @JoinColumn(name = "student_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id"))
-    private Set<Course> courses = new HashSet<>();
+    private Set<Course> courses;
 
 
     public Student() {}
 
-    public Student(Long id, String firstName, String lastName, String nationalCode, String fatherName, Date birthDate, String education, String email, String homeNumber, String cellPhoneNumber, String address, Long studentCode) {
-        super(id, firstName, lastName, nationalCode, fatherName, birthDate, education, email, homeNumber, cellPhoneNumber, address);
+    public Student(Long id, String firstName, String lastName, String education, String email, String homeNumber, String cellPhoneNumber, String address, Long studentCode) {
+        super(id, firstName, lastName, education, email, homeNumber, cellPhoneNumber, address);
         this.studentCode = studentCode;
     }
 

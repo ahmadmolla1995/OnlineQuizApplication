@@ -2,14 +2,14 @@ package ir.maktab.finalproject.onlinequizapplication.dto;
 
 
 public class RoleDTO {
-    private String role;
+    private String roleType;
 
-    public RoleDTO(String role) {
-        this.role = role;
+    public RoleDTO(String roleType) {
+        this.roleType = roleType;
     }
 
-
-    public String getRole() {
-        return role;
+    public String getRoleType() {
+        return roleType;
     }
 }
+
