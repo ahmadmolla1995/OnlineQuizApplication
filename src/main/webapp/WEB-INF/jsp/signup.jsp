@@ -68,8 +68,8 @@
                                     </div>
 
                                     <div class="row">
-                                        <label for="role"></label>
-                                        <select id="role" name="role" class="form-control mb-2">
+                                        <label for="roleType"></label>
+                                        <select id="roleType" name="roleType" class="form-control mb-2">
                                             <option value="ROLE_STUDENT">STUDENT</option>
                                             <option value="ROLE_TEACHER">TEACHER</option>
                                             <option value="ROLE_MANAGER">MANAGER</option>

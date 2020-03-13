@@ -1,8 +1,6 @@
 package ir.maktab.finalproject.onlinequizapplication.model;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 
 
@@ -25,16 +23,12 @@ public class Student extends Person {
         this.studentCode = studentCode;
     }
 
+    
+    @Override
+    public Long getId() { return id; }
 
     @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public void setId(Long id) { this.id = id; }
 
     public Long getStudentCode() {
         return studentCode;

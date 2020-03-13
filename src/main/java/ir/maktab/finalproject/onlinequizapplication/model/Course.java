@@ -3,9 +3,7 @@ package ir.maktab.finalproject.onlinequizapplication.model;
 import ir.maktab.finalproject.onlinequizapplication.enumeration.CourseStatus;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -13,8 +11,12 @@ public class Course {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private Long courseCode;
+
+    @Column(nullable = false, unique = true)
     private String title;
+
     private Date startDate;
     private Date endDate;
 
@@ -22,10 +24,13 @@ public class Course {
     private CourseStatus courseStatus;
 
     @ManyToOne
-    private Teacher teacher = new Teacher();
+    private Teacher teacher;
 
     @ManyToMany(mappedBy = "courses")
     private Set<Student> students = new HashSet<>();
+
+    @OneToMany(mappedBy = "course")
+    private List<Exam> exams = new ArrayList<>();
 
 
     public Course() {}
@@ -86,9 +91,7 @@ public class Course {
         this.teacher = teacher;
     }
 
-    public Set<Student> getStudents() {
-        return students;
-    }
+    public Set<Student> getStudents() { return students; }
 
     public void addStudent(Student student) {
         this.students.add(student);
@@ -97,4 +100,10 @@ public class Course {
     public void removeStudent(Student student) {
         this.students.remove(student);
     }
+
+    public List<Exam> getExams() { return exams; }
+
+    public void addExam(Exam exam) { this.exams.add(exam); }
+
+    public void removeExam(Long examID) { this.exams.removeIf(exam -> exam.getId().equals(examID)); }
 }

@@ -1,7 +1,5 @@
 package ir.maktab.finalproject.onlinequizapplication.dto;
 
-import ir.maktab.finalproject.onlinequizapplication.enumeration.RoleType;
-
 
 public class PersonRegisterDTO {
     private String username;
@@ -13,10 +11,10 @@ public class PersonRegisterDTO {
     private String cellPhoneNumber;
     private String email;
     private String address;
-    private RoleType roleType;
+    private String roleType;
 
 
-    public PersonRegisterDTO(String username, String password, String firstName, String lastName, String education, String homeNumber, String cellPhoneNumber, String email, String address, RoleType roleType) {
+    public PersonRegisterDTO(String username, String password, String firstName, String lastName, String education, String homeNumber, String cellPhoneNumber, String email, String address, String roleType) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
@@ -29,7 +27,7 @@ public class PersonRegisterDTO {
         this.roleType = roleType;
     }
 
-
+    
     public String getUsername() {
         return username;
     }
@@ -52,9 +50,7 @@ public class PersonRegisterDTO {
         return homeNumber;
     }
 
-    public String getCellPhoneNumber() {
-        return cellPhoneNumber;
-    }
+    public String getCellPhoneNumber() { return cellPhoneNumber; }
 
     public String getEmail() {
         return email;
@@ -64,6 +60,6 @@ public class PersonRegisterDTO {
         return address;
     }
 
-    public RoleType getRoleType() { return roleType; }
+    public String getRoleType() { return roleType; }
 }
 

@@ -25,13 +25,13 @@ public class Account {
     private Date createdDate;
     private Date lastLoginDate;
     private Boolean enable;
-    
+
     @OneToOne(cascade = CascadeType.ALL)
     private Person person = new Person();
 
     @ManyToMany
-    @JoinTable(name = "account_roles", joinColumns = @JoinColumn(name = "account_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     @Column(nullable = false)
+    @JoinTable(name = "account_roles", joinColumns = @JoinColumn(name = "account_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
     private Set<Role> roles = new HashSet<>();
 
 
@@ -59,9 +59,7 @@ public class Account {
         this.username = username;
     }
 
-    public String getPassword() {
-        return password;
-    }
+    public String getPassword() { return password; }
 
     public void setPassword(String password) {
         this.password = password;
@@ -103,19 +101,11 @@ public class Account {
         return person;
     }
 
-    public void setPerson(Person person) {
-        this.person = person;
-    }
+    public void setPerson(Person person) { this.person = person; }
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
+    public Set<Role> getRoles() { return roles; }
 
-    public void addRole(Role role) {
-        this.roles.add(role);
-    }
+    public void addRole(Role role) { this.roles.add(role); }
 
-    public void removeRole(Role role) {
-        this.roles.remove(role);
-    }
+    public void removeRole(Role role) { this.roles.remove(role); }
 }

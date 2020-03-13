@@ -39,21 +39,9 @@ public class Role {
     public RoleType getRoleType() {
         return roleType;
     }
-
-    public void setRoleType(RoleType roleType) {
-        this.roleType = roleType;
-    }
-
+    
     public List<Account> getAccounts() {
         return accounts;
-    }
-
-    public void addAccount(Account account) {
-        this.accounts.add(account);
-    }
-
-    public void removeAccount(Account account) {
-        this.accounts.remove(account);
     }
 
     public Set<Privilege> getPrivileges() {

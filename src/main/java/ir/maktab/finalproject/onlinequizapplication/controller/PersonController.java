@@ -1,29 +1,16 @@
 package ir.maktab.finalproject.onlinequizapplication.controller;
 
-import ir.maktab.finalproject.onlinequizapplication.dto.PersonRegisterDTO;
-import ir.maktab.finalproject.onlinequizapplication.exception.AccountNotActivatedException;
 import ir.maktab.finalproject.onlinequizapplication.service.PersonService;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
 
-@RestController
-@RequestMapping
+@Controller
+@RequestMapping(value = "/person")
 public class PersonController {
     private final PersonService personService;
 
     public PersonController(PersonService personService) {
         this.personService = personService;
     }
-
-/*
-    @RequestMapping (value = "/completeInformation", method = RequestMethod.POST)
-    public void completeInformation (@RequestBody PersonRegisterDTO personDTO) throws AccountNotActivatedException {
-        personService.CompleteRegistration(personDTO);
-    }
-
-
- */
 }

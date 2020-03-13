@@ -10,7 +10,7 @@ import javax.persistence.Id;
 public class Manager extends Person {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
     private Long managerCode;
 
 

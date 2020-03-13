@@ -1,7 +1,5 @@
 package ir.maktab.finalproject.onlinequizapplication.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
 
 
@@ -55,9 +53,7 @@ public class Person {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+    public void setLastName(String lastName) { this.lastName = lastName; }
 
     public String getEducation() {
         return education;
