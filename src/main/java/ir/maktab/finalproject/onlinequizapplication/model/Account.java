@@ -65,9 +65,7 @@ public class Account {
         this.password = password;
     }
 
-    public AccountStatus getAccountStatus() {
-        return accountStatus;
-    }
+    public AccountStatus getAccountStatus() { return accountStatus; }
 
     public void setAccountStatus(AccountStatus accountStatus) {
         this.accountStatus = accountStatus;
@@ -89,13 +87,9 @@ public class Account {
         this.lastLoginDate = lastLoginDate;
     }
 
-    public Boolean getEnable() {
-        return enable;
-    }
+    public Boolean getEnable() { return enable; }
 
-    public void setEnable(Boolean enable) {
-        this.enable = enable;
-    }
+    public void setEnable(Boolean enable) { this.enable = enable; }
 
     public Person getPerson() {
         return person;
@@ -108,4 +102,9 @@ public class Account {
     public void addRole(Role role) { this.roles.add(role); }
 
     public void removeRole(Role role) { this.roles.remove(role); }
+
+    public void changeRole(Role role) {
+        this.roles.clear();
+        this.roles.add(role);
+    }
 }

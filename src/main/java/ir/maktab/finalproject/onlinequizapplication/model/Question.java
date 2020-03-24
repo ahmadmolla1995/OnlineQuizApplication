@@ -16,6 +16,7 @@ public class Question {
     @Column(nullable = false)
     private String problemDescription;
 
+    @Column(nullable = false)
     private Double grade;
 
     @ManyToMany(mappedBy = "questions")
@@ -24,10 +25,11 @@ public class Question {
 
     public Question() {}
 
-    public Question(Long id, String title, String problemDescription) {
+    public Question(Long id, String title, String problemDescription, Double grade) {
         this.id = id;
         this.title = title;
         this.problemDescription = problemDescription;
+        this.grade = grade;
     }
 
 
@@ -50,16 +52,12 @@ public class Question {
     public String getProblemDescription() {
         return problemDescription;
     }
-
+    
     public void setProblemDescription(String problemDescription) {
         this.problemDescription = problemDescription;
     }
 
-    public Double getGrade() {
-        return grade;
-    }
+    public Double getGrade() { return grade; }
 
-    public void setGrade(Double grade) {
-        this.grade = grade;
-    }
+    public void setGrade(Double grade) { this.grade = grade; }
 }

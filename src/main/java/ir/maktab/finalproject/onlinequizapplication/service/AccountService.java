@@ -3,10 +3,7 @@ package ir.maktab.finalproject.onlinequizapplication.service;
 import ir.maktab.finalproject.onlinequizapplication.dto.*;
 import ir.maktab.finalproject.onlinequizapplication.enumeration.AccountStatus;
 import ir.maktab.finalproject.onlinequizapplication.enumeration.RoleType;
-import ir.maktab.finalproject.onlinequizapplication.exception.AccountAlreadyExistsException;
-import ir.maktab.finalproject.onlinequizapplication.exception.AccountNotFoundException;
-import ir.maktab.finalproject.onlinequizapplication.exception.RoleNotFoundException;
-import ir.maktab.finalproject.onlinequizapplication.exception.WrongPasswordException;
+import ir.maktab.finalproject.onlinequizapplication.exception.*;
 import ir.maktab.finalproject.onlinequizapplication.mapper.PersonRegisterDtoToPersonMapper;
 import ir.maktab.finalproject.onlinequizapplication.mapper.PersonToPersonLoginCompletionDtoMapper;
 import ir.maktab.finalproject.onlinequizapplication.mapper.PersonToPersonRegisterCompletionDtoMapper;
@@ -20,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -64,13 +62,18 @@ public class AccountService {
         return PersonToPersonRegisterCompletionDtoMapper.mapper(person);
     }
 
-    public PersonSignInCompletionDTO signIn (PersonLoginDTO personDto) throws AccountNotFoundException, WrongPasswordException {
+    public PersonSignInCompletionDTO signIn (PersonLoginDTO personDto) throws AccountNotFoundException, WrongPasswordException, AccountNotConfirmedException, AccountRejectedException {
         Account account = accountRepository.findByUsername(personDto.getUsername());
 
         if (account == null)
             throw new AccountNotFoundException("There isn't account with this username");
         if (!account.getPassword().equals(personDto.getPassword()))
-            throw new WrongPasswordException("Password is wrong!");
+            throw new WrongPasswordException("Password is wrong! Try again.");
+        if (account.getAccountStatus().equals(AccountStatus.WAITING_CONFIRMATION))
+            throw new AccountNotConfirmedException("Your account has not confirmed yet!");
+        if (account.getAccountStatus().equals(AccountStatus.REJECTED))
+            throw new AccountRejectedException("Your account has been rejected by manager");
+
 
         account.setLastLoginDate(new Date());
         accountRepository.save(account);
@@ -82,7 +85,7 @@ public class AccountService {
     }
 
     public void logout() {
-        AuthenticationService.logoutUser();
+        AuthenticationService.setLoginUser(null);
     }
 
     public void confirm (Long accountID) throws AccountNotFoundException {
@@ -121,24 +124,36 @@ public class AccountService {
         return accountRepository.findAllByAccountStatus(accountStatus);
     }
 
+    public List<Account> getAllAccounts(AccountSearchDTO accountSearchDTO) {
+        List<Account> filteredAccounts = accountRepository.findAll();
+
+        if (!accountSearchDTO.getUsername().equals(""))
+            filteredAccounts = filteredAccounts.stream().filter(account -> account.getUsername().equals(accountSearchDTO.getUsername())).collect(Collectors.toList());
+
+        if (!accountSearchDTO.getFirstName().equals(""))
+            filteredAccounts = filteredAccounts.stream().filter(account -> account.getPerson().getFirstName().equals(accountSearchDTO.getFirstName())).collect(Collectors.toList());
+
+        if (!accountSearchDTO.getLastName().equals(""))
+            filteredAccounts = filteredAccounts.stream().filter(account -> account.getPerson().getLastName().equals(accountSearchDTO.getLastName())).collect(Collectors.toList());
+
+        if (!accountSearchDTO.getAddress().equals(""))
+            filteredAccounts = filteredAccounts.stream().filter(account -> account.getPerson().getAddress().equals(accountSearchDTO.getAddress())).collect(Collectors.toList());
+
+        filteredAccounts = filteredAccounts.stream().filter(account -> account.getAccountStatus().toString().equals(accountSearchDTO.getAccountStatus())).collect(Collectors.toList());
+        filteredAccounts = filteredAccounts.stream().filter(account -> account.getRoles().iterator().next().getRoleType().toString().equals(accountSearchDTO.getRole())).collect(Collectors.toList());
+
+        return filteredAccounts;
+    }
+
     public void editAccount(AccountEditDTO accountEditDTO) throws AccountNotFoundException {
         Optional<Account> account = accountRepository.findById(accountEditDTO.getAccountID());
-
-        if (account.isPresent()) {
-            account.get().setUsername(accountEditDTO.getUsername());
-            account.get().getPerson().setFirstName(accountEditDTO.getFirstName());
-            account.get().getPerson().setLastName(accountEditDTO.getLastName());
-            account.get().setAccountStatus(accountEditDTO.getAccountStatus());
-            account.get().setEnable(accountEditDTO.getEnable());
-            account.get().getPerson().setAddress(accountEditDTO.getAddress());
-            account.get().getPerson().setEmail(accountEditDTO.getEmail());
-            account.get().getPerson().setHomeNumber(accountEditDTO.getHomeNumber());
-            account.get().getPerson().setCellPhoneNumber(accountEditDTO.getCellPhoneNumber());
-
-            accountRepository.save(account.get());
-        }
-        else
+        if (!account.isPresent())
             throw new AccountNotFoundException("There isn't any account with this id!");
+
+        account.get().setUsername(accountEditDTO.getUsername());
+        account.get().changeRole(roleRepository.findByRoleType(RoleType.valueOf(accountEditDTO.getRole())));
+
+        accountRepository.save(account.get());
     }
 }
 

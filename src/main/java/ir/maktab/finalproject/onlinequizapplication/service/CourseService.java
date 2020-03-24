@@ -1,14 +1,13 @@
 package ir.maktab.finalproject.onlinequizapplication.service;
 
 import ir.maktab.finalproject.onlinequizapplication.dto.CourseCreateDTO;
+import ir.maktab.finalproject.onlinequizapplication.dto.RemovePersonFromCourseDTO;
 import ir.maktab.finalproject.onlinequizapplication.enumeration.CourseStatus;
+import ir.maktab.finalproject.onlinequizapplication.enumeration.RoleType;
 import ir.maktab.finalproject.onlinequizapplication.exception.CourseNotFoundException;
 import ir.maktab.finalproject.onlinequizapplication.exception.PersonNotFoundException;
 import ir.maktab.finalproject.onlinequizapplication.mapper.CourseDtoToCourseMapper;
-import ir.maktab.finalproject.onlinequizapplication.model.Course;
-import ir.maktab.finalproject.onlinequizapplication.model.Person;
-import ir.maktab.finalproject.onlinequizapplication.model.Student;
-import ir.maktab.finalproject.onlinequizapplication.model.Teacher;
+import ir.maktab.finalproject.onlinequizapplication.model.*;
 import ir.maktab.finalproject.onlinequizapplication.repository.CourseRepository;
 import ir.maktab.finalproject.onlinequizapplication.repository.StudentRepository;
 import ir.maktab.finalproject.onlinequizapplication.repository.TeacherRepository;
@@ -16,9 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -64,12 +61,16 @@ public class CourseService {
         courseRepository.save(course.get());
     }
 
+    public List<Course> getAllCourses() {
+        return courseRepository.findAll();
+    }
+
     public void addStudentToCourse(Long courseID, Long studentID) throws CourseNotFoundException, PersonNotFoundException {
         Optional<Course> course = courseRepository.findById(courseID);
-        Optional<Student> student = studentRepository.findById(studentID);
-        
         if (!course.isPresent())
             throw new CourseNotFoundException("There isn't any course with this id");
+
+        Optional<Student> student = studentRepository.findById(studentID);
         if (!student.isPresent())
             throw new PersonNotFoundException("There isn't any student with this id");
 
@@ -77,25 +78,12 @@ public class CourseService {
         courseRepository.save(course.get());
     }
 
-    public void removeStudentFromCourse(Long courseID, Long studentID) throws CourseNotFoundException, PersonNotFoundException {
-        Optional<Course> course = courseRepository.findById(courseID);
-        Optional<Student> student = studentRepository.findById(studentID);
-
-        if (!course.isPresent())
-            throw new CourseNotFoundException("There isn't any course with this id");
-        if (!student.isPresent())
-            throw new PersonNotFoundException("There isn't any student with this id");
-
-        course.get().removeStudent(student.get());
-        courseRepository.save(course.get());
-    }
-
     public void addTeacherToCourse(Long courseID, Long teacherID) throws CourseNotFoundException, PersonNotFoundException {
         Optional<Course> course = courseRepository.findById(courseID);
-        Optional<Teacher> teacher = teacherRepository.findById(teacherID);
-
         if (!course.isPresent())
             throw new CourseNotFoundException("There isn't any course with this id");
+
+        Optional<Teacher> teacher = teacherRepository.findById(teacherID);
         if (!teacher.isPresent())
             throw new PersonNotFoundException("There isn't any teacher with this id");
 
@@ -103,21 +91,17 @@ public class CourseService {
         courseRepository.save(course.get());
     }
 
-    public void removeTeacherFromCourse(Long courseID, Long teacherID) throws CourseNotFoundException, PersonNotFoundException {
-        Optional<Course> course = courseRepository.findById(courseID);
-        Optional<Teacher> teacher = teacherRepository.findById(teacherID);
-
+    public void removePersonFromCourse(RemovePersonFromCourseDTO personDto) throws CourseNotFoundException {
+        Optional<Course> course = courseRepository.findById(personDto.getCourseID());
         if (!course.isPresent())
-            throw new CourseNotFoundException("There isn't any course with this id");
-        if (!teacher.isPresent())
-            throw new PersonNotFoundException("There isn't any teacher with this id");
+            throw new CourseNotFoundException("There isn't any course with this id!");
 
-        course.get().setTeacher(null);
+        if (personDto.getRoleType().equals(RoleType.ROLE_STUDENT.toString()))
+            course.get().removeStudent(personDto.getPersonID());
+        else
+            course.get().setTeacher(null);
+
         courseRepository.save(course.get());
-    }
-
-    public List<Course> getAllCourses() {
-        return courseRepository.findAll();
     }
 
     public List<Person> getAllParticipants(Long courseID) throws CourseNotFoundException {
@@ -125,9 +109,29 @@ public class CourseService {
         if (!course.isPresent())
             throw new CourseNotFoundException("Course not found!");
 
-        List<Person> participants = new ArrayList<>(course.get().getStudents());
-        participants.add(course.get().getTeacher());
+        List<Person> participants = new ArrayList<>();
+
+        Set<Student> students = course.get().getStudents();
+        for(Student student: students)
+            participants.add(student);
+
+        Teacher teacher = course.get().getTeacher();
+        if (teacher != null)
+            participants.add(teacher);
 
         return participants;
+    }
+
+    public Set<Question> getArchivedQuestions(Long courseID) throws CourseNotFoundException {
+        Optional<Course> course = courseRepository.findById(courseID);
+        if (!course.isPresent())
+            throw new CourseNotFoundException("There isn't any course with this id!");
+
+        Set<Question> archivedQuestions = new HashSet<>();
+        for(Exam exam: course.get().getExams())
+            for (Question question : exam.getQuestions())
+                archivedQuestions.add(question);
+
+        return archivedQuestions;
     }
 }

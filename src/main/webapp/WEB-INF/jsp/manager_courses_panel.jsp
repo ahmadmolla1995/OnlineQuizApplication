@@ -77,6 +77,7 @@
                                 <table class="table table-bordered table-dark">
                                     <thead>
                                         <tr>
+                                            <th scope="col">#</th>
                                             <th scope="col">Course Code</th>
                                             <th scope="col">Title</th>
                                             <th scope="col">Start Date</th>
@@ -84,25 +85,29 @@
                                             <th scope="col">Course Status</th>
                                         </tr>
                                     </thead>
+
                                     <tbody>
                                         <% List<Course> courses = (List<Course>) request.getAttribute("courses");
                                             for (int i = 0; i < courses.size(); i++) {
                                         %>
                                             <tr>
+                                                <td> <%= i + 1 %> </td>
                                                 <td> <%= courses.get(i).getCourseCode() %> </td>
                                                 <td> <%= courses.get(i).getTitle() %> </td>
                                                 <td> <%= courses.get(i).getStartDate() %> </td>
                                                 <td> <%= courses.get(i).getEndDate() %> </td>
                                                 <td> <%= courses.get(i).getCourseStatus() %> </td>
+
                                                 <td>
-                                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStudentModal">Add Student</button>
+                                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addStudentModal" onclick="addStudentSetAccountID('<%= courses.get(i).getId() %>')">
+                                                        Add Student
+                                                    </button>
 
                                                     <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="addStudentModal" aria-labelledby="studentModal">
                                                         <div class="modal-dialog modal-dialog-centered" role="document">
                                                             <div class="modal-content">
                                                                 <div class="modal-header" style="color: white; background-color: #349dff;">
                                                                     <h5 class="modal-title" id="studentModal">Add Student</h5>
-
                                                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                         <span aria-hidden="true">&times;</span>
                                                                     </button>
@@ -113,23 +118,26 @@
                                                                         <form class="text-center" action="addStudent" method="post">
                                                                             <label for="studentID">StudentID</label>
                                                                             <input type="text" id="studentID" name="studentID" required placeholder="Student ID" class="form-control mb-2">
-                                                                            <input type="hidden" id="courseID" name="courseID" value="<%= courses.get(i).getId() %>">
+                                                                            <input type="text" id="addStudentCourseID" name="courseID" hidden>
 
                                                                             <div class="modal-footer" style="background-color: white;">
-                                                                                <button type="button" style="float: left;" class="btn btn-primary" data-dismiss="modal"> Cancel </button>
-                                                                                <button type="submit" style="float: right;" class="btn btn-primary"> Add </button>
+                                                                                <button type="button" class="btn btn-primary" data-dismiss="modal"> Cancel </button>
+                                                                                <button type="submit" class="btn btn-primary"> Add </button>
                                                                             </div>
                                                                         </form>
                                                                     </div>
-
                                                                 </div>
+
                                                             </div>
+
                                                         </div>
                                                     </div>
                                                 </td>
 
                                                 <td>
-                                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTeacherModal">Add Teacher</button>
+                                                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addTeacherModal" onclick="addTeacherSetAccountID('<%= courses.get(i).getId() %>')">
+                                                        Add Teacher
+                                                    </button>
 
                                                     <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="addTeacherModal" aria-labelledby="teacherModal">
                                                         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -147,20 +155,19 @@
                                                                         <form class="text-center" action="addTeacher" method="post">
                                                                             <label for="teacherID">TeacherID</label>
                                                                             <input type="text" id="teacherID" name="teacherID" required placeholder="Teacher ID" class="form-control mb-2">
-                                                                            <input type="hidden" name="courseID" value="<%= courses.get(i).getId() %>">
+                                                                            <input type="text" id="addTeacherCourseID" name="courseID" hidden>
 
                                                                             <div class="modal-footer" style="background-color: white;">
-                                                                                <button type="button" style="float: left;" class="btn btn-primary" data-dismiss="modal"> Cancel </button>
-                                                                                <button type="submit" style="float: right;" class="btn btn-primary"> Add </button>
+                                                                                <button type="button" class="btn btn-primary" data-dismiss="modal"> Cancel </button>
+                                                                                <button type="submit" class="btn btn-primary"> Add </button>
                                                                             </div>
                                                                         </form>
                                                                     </div>
-
                                                                 </div>
+
                                                             </div>
                                                         </div>
                                                     </div>
-
                                                 </td>
 
                                                 <td>
@@ -169,6 +176,7 @@
                                                         <button type="submit" class="btn btn-primary">View Participants</button>
                                                     </form>
                                                 </td>
+
                                             </tr>
                                         <%  } %>
                                     </tbody>

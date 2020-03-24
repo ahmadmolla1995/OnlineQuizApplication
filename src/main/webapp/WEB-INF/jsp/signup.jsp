@@ -72,7 +72,6 @@
                                         <select id="roleType" name="roleType" class="form-control mb-2">
                                             <option value="ROLE_STUDENT">STUDENT</option>
                                             <option value="ROLE_TEACHER">TEACHER</option>
-                                            <option value="ROLE_MANAGER">MANAGER</option>
                                             <option value="ROLE_GUEST">GUEST</option>
                                             <option value="ROLE_TEACHING_ASSISTANT">TEACHING ASSISTANT</option>
                                         </select>

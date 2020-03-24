@@ -1,16 +1,11 @@
 package ir.maktab.finalproject.onlinequizapplication.controller;
 
-import ir.maktab.finalproject.onlinequizapplication.dto.AddStudentDTO;
-import ir.maktab.finalproject.onlinequizapplication.dto.AddTeacherToCourseDTO;
-import ir.maktab.finalproject.onlinequizapplication.dto.CourseCreateDTO;
-import ir.maktab.finalproject.onlinequizapplication.dto.ViewCourseParticipantsDTO;
+import ir.maktab.finalproject.onlinequizapplication.dto.*;
 import ir.maktab.finalproject.onlinequizapplication.exception.CourseNotFoundException;
 import ir.maktab.finalproject.onlinequizapplication.exception.PersonNotFoundException;
 import ir.maktab.finalproject.onlinequizapplication.model.Course;
 import ir.maktab.finalproject.onlinequizapplication.model.Person;
-import ir.maktab.finalproject.onlinequizapplication.model.Student;
 import ir.maktab.finalproject.onlinequizapplication.service.CourseService;
-import ir.maktab.finalproject.onlinequizapplication.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -27,13 +22,10 @@ import java.util.List;
 public class CourseController {
     @Autowired
     private final CourseService courseService;
-    @Autowired
-    private final StudentService studentService;
 
 
-    public CourseController(CourseService courseService, StudentService studentService) {
+    public CourseController(CourseService courseService) {
         this.courseService = courseService;
-        this.studentService = studentService;
     }
 
 
@@ -61,21 +53,30 @@ public class CourseController {
     public String addStudent(@ModelAttribute AddStudentDTO addStudentDTO) throws CourseNotFoundException, PersonNotFoundException {
         courseService.addStudentToCourse(addStudentDTO.getCourseID(), addStudentDTO.getStudentID());
 
-        return "redirect:/course/managerPanel";
+        return "redirect:/course/managerPanel/viewCourses";
     }
 
     @RequestMapping(value = "/managerPanel/addTeacher", method = RequestMethod.POST)
     public String addTeacher(@ModelAttribute AddTeacherToCourseDTO addTeacherToCourseDTO) throws CourseNotFoundException, PersonNotFoundException {
         courseService.addTeacherToCourse(addTeacherToCourseDTO.getCourseID(), addTeacherToCourseDTO.getTeacherID());
 
-        return "redirect:/course/managerPanel";
+        return "redirect:/course/managerPanel/viewCourses";
     }
 
     @RequestMapping(value = "/managerPanel/viewParticipants", method = RequestMethod.POST)
     public String viewCourseParticipants(@ModelAttribute ViewCourseParticipantsDTO courseParticipantsDTO, ModelMap modelMap) throws CourseNotFoundException {
         List<Person> participants = courseService.getAllParticipants(courseParticipantsDTO.getCourseID());
+
         modelMap.addAttribute("course_participants", participants);
+        modelMap.addAttribute("courseID", courseParticipantsDTO.getCourseID());
 
         return "course_participants";
+    }
+
+    @RequestMapping(value = "/managerPanel/viewParticipants/deletePerson", method = RequestMethod.POST)
+    public String removePersonFromCourse(@ModelAttribute RemovePersonFromCourseDTO personDto) throws CourseNotFoundException {
+        courseService.removePersonFromCourse(personDto);
+
+        return "redirect:/course/managerPanel/viewCourses";
     }
 }

@@ -40,6 +40,14 @@
                             <td> <%= participants.get(i).getFirstName() %> </td>
                             <td> <%= participants.get(i).getLastName() %> </td>
                             <td> <%= participants.get(i).getAccount().getRoles().iterator().next().getRoleType() %> </td>
+                            <td>
+                                <form action="viewParticipants/deletePerson" method="post">
+                                    <input type="hidden" id="courseID" name="courseID" value="<%= request.getAttribute("courseID") %>">
+                                    <input type="hidden" id="personID" name="personID" value="<%= participants.get(i).getId() %>">
+                                    <input type="hidden" id="roleType" name="roleType" value="<%= participants.get(i).getAccount().getRoles().iterator().next().getRoleType().toString() %>">
+                                    <button type="submit" class="btn btn-primary">Remove</button>
+                                </form>
+                            </td>
                         </tr>
                         <%  } %>
                         </tbody>

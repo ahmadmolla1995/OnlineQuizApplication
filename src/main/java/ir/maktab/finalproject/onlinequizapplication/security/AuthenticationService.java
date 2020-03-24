@@ -10,12 +10,8 @@ public final class AuthenticationService {
     public static PersonSignInCompletionDTO getLoginUser() {
         return personSignInCompletionDTO;
     }
-
+    
     public static void setLoginUser(PersonSignInCompletionDTO person) {
         personSignInCompletionDTO = person;
-    }
-
-    public static void logoutUser() {
-        personSignInCompletionDTO = null;
     }
 }

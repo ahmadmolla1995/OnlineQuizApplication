@@ -26,7 +26,8 @@ public class Course {
     @ManyToOne
     private Teacher teacher;
 
-    @ManyToMany(mappedBy = "courses")
+    @ManyToMany
+    @JoinTable(name = "courses_students", joinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "student_id", referencedColumnName = "id"))
     private Set<Student> students = new HashSet<>();
 
     @OneToMany(mappedBy = "course")
@@ -48,6 +49,8 @@ public class Course {
     public Long getId() {
         return id;
     }
+
+    public void setId(Long id) { this.id = id; }
 
     public Long getCourseCode() {
         return courseCode;
@@ -83,23 +86,15 @@ public class Course {
         this.courseStatus = courseStatus;
     }
 
-    public Teacher getTeacher() {
-        return teacher;
-    }
+    public Teacher getTeacher() { return teacher; }
 
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
-    }
+    public void setTeacher(Teacher teacher) { this.teacher = teacher; }
 
     public Set<Student> getStudents() { return students; }
 
-    public void addStudent(Student student) {
-        this.students.add(student);
-    }
+    public void addStudent(Student student) { this.students.add(student); }
 
-    public void removeStudent(Student student) {
-        this.students.remove(student);
-    }
+    public void removeStudent(Long studentID) { this.students.removeIf(student -> student.getId().equals(studentID)); }
 
     public List<Exam> getExams() { return exams; }
 
@@ -107,3 +102,4 @@ public class Course {
 
     public void removeExam(Long examID) { this.exams.removeIf(exam -> exam.getId().equals(examID)); }
 }
+

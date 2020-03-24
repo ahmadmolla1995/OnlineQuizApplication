@@ -1,34 +1,33 @@
 package ir.maktab.finalproject.onlinequizapplication.dto;
 
-
 import ir.maktab.finalproject.onlinequizapplication.enumeration.AccountStatus;
 
-public class AccountEditDTO {
+
+public final class AccountEditDTO {
     private Long accountID;
     private String username;
     private String firstName;
     private String lastName;
+    private String role;
     private AccountStatus accountStatus;
-    private Boolean enable;
     private String address;
     private String email;
     private String homeNumber;
     private String cellPhoneNumber;
 
 
-    public AccountEditDTO(Long accountID, String username, String firstName, String lastName, AccountStatus accountStatus, Boolean enable, String address, String email, String homeNumber, String cellPhoneNumber) {
+    public AccountEditDTO(Long accountID, String username, String firstName, String lastName, String role, AccountStatus accountStatus, String address, String email, String homeNumber, String cellPhoneNumber) {
         this.accountID = accountID;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.role = role;
         this.accountStatus = accountStatus;
-        this.enable = enable;
         this.address = address;
         this.email = email;
         this.homeNumber = homeNumber;
         this.cellPhoneNumber = cellPhoneNumber;
     }
-
 
     public Long getAccountID() {
         return accountID;
@@ -46,12 +45,12 @@ public class AccountEditDTO {
         return lastName;
     }
 
-    public AccountStatus getAccountStatus() {
-        return accountStatus;
+    public String getRole() {
+        return role;
     }
 
-    public Boolean getEnable() {
-        return enable;
+    public AccountStatus getAccountStatus() {
+        return accountStatus;
     }
 
     public String getAddress() {

@@ -1,11 +1,6 @@
 package ir.maktab.finalproject.onlinequizapplication.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.*;
 
 
 @Entity
@@ -13,44 +8,35 @@ public class MultipleChoiceQuestion extends Question {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private List<String> options = new ArrayList<>();
-    private Long response;
+    @Column(nullable = false)
+    private String options;
 
+    @Column(nullable = false)
+    private Long correctResponse;
+
+
+    public MultipleChoiceQuestion() {
+        super();
+    }
     
-    public MultipleChoiceQuestion(Long id, List<String> options, Long response) {
-        this.id = id;
+    public MultipleChoiceQuestion(Long id, String title, String problemDescription, Double grade, String options, Long correctResponse) {
+        super(id, title, problemDescription, grade);
         this.options = options;
-        this.response = response;
+        this.correctResponse = correctResponse;
     }
 
 
     @Override
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
     @Override
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public void setId(Long id) { this.id = id; }
 
-    public List<String> getOptions() {
-        return options;
-    }
+    public Long getCorrectResponse() { return correctResponse; }
 
-    public Long getResponse() {
-        return response;
-    }
+    public void setCorrectResponse(Long correctResponse) { this.correctResponse = correctResponse; }
 
-    public void setResponse(Long response) {
-        this.response = response;
-    }
+    public String getOptions() { return options; }
 
-    public void addOption(String option) {
-        this.options.add(option);
-    }
-
-    public void removeOption(String option) {
-        this.options.remove(option);
-    }
+    public void setOptions(String options) { this.options = options; }
 }

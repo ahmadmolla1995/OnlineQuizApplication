@@ -11,8 +11,7 @@ public class Student extends Person {
 
     private Long studentCode;
 
-    @ManyToMany
-    @JoinTable(name = "students_courses", joinColumns = @JoinColumn(name = "student_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "course_id", referencedColumnName = "id"))
+    @ManyToMany(mappedBy = "students")
     private Set<Course> courses;
 
 
@@ -25,10 +24,14 @@ public class Student extends Person {
 
     
     @Override
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
     @Override
-    public void setId(Long id) { this.id = id; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public Long getStudentCode() {
         return studentCode;
@@ -50,3 +53,5 @@ public class Student extends Person {
         this.courses.remove(course);
     }
 }
+
+

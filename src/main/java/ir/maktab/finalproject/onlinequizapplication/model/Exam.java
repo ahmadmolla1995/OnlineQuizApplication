@@ -2,6 +2,7 @@ package ir.maktab.finalproject.onlinequizapplication.model;
 
 import javax.persistence.*;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 
@@ -36,6 +37,7 @@ public class Exam {
         this.title = title;
         this.description = description;
         this.duration = duration;
+        this.totalGrade = 0.0;
     }
 
 
@@ -75,8 +77,12 @@ public class Exam {
         return totalGrade;
     }
 
-    public void setTotalGrade() {
-        this.totalGrade = questions.stream().mapToDouble(Question::getGrade).sum();
+    public Course getCourse() {
+        return course;
+    }
+
+    public void setCourse(Course course) {
+        this.course = course;
     }
 
     public Set<Question> getQuestions() {
@@ -84,19 +90,16 @@ public class Exam {
     }
 
     public void addQuestion(Question question) {
-        this.questions.add(question);
+        if (!questions.contains(question)) {
+            this.questions.add(question);
+            this.totalGrade += question.getGrade();
+        }
     }
 
     public void removeQuestion(Long questionID) {
-        this.questions.removeIf(question -> question.getId().equals(questionID));
-    }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
+        Optional<Question> question = questions.stream().filter(q -> q.getId().equals(questionID)).findFirst();
+        this.questions.remove(question.get());
+        this.totalGrade -= question.get().getGrade();
     }
 }
 
