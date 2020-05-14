@@ -75,6 +75,7 @@ public class CourseService {
             throw new PersonNotFoundException("There isn't any student with this id");
 
         course.get().addStudent(student.get());
+        System.out.println("salaam");
         courseRepository.save(course.get());
     }
 

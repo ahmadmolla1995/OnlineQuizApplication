@@ -1,6 +1,5 @@
 package ir.maktab.finalproject.onlinequizapplication.service;
 
-import ir.maktab.finalproject.onlinequizapplication.exception.CourseNotFoundException;
 import ir.maktab.finalproject.onlinequizapplication.exception.PersonNotFoundException;
 import ir.maktab.finalproject.onlinequizapplication.model.Course;
 import ir.maktab.finalproject.onlinequizapplication.model.Teacher;

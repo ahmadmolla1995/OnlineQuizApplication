@@ -63,7 +63,7 @@ public class QuestionService {
         );
     }
 
-    public Question find(Long questionID) throws QuestionNotFoundException {
+    public Question findByID(Long questionID) throws QuestionNotFoundException {
         Optional<Question> question = questionRepository.findById(questionID);
         if (!question.isPresent())
             throw new QuestionNotFoundException("There isn't any question with this id!");

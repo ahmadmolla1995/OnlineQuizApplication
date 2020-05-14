@@ -27,7 +27,6 @@
                                 <th scope="col">Username</th>
                                 <th scope="col">First Name</th>
                                 <th scope="col">Last Name</th>
-                                <th scope="col">Role</th>
                                 <th scope="col">Education</th>
                                 <th scope="col">Account Status</th>
                                 <th scope="col">Home Number</th>
@@ -36,21 +35,20 @@
                         </thead>
 
                         <tbody>
-                        <% List<Account> accounts = (List<Account>) request.getAttribute("filteredAccounts");
-                            for (int i = 0; i < accounts.size(); i++) {
-                        %>
-                        <tr>
-                            <td> <%= i + 1 %> </td>
-                            <td> <%= accounts.get(i).getUsername() %> </td>
-                            <td> <%= accounts.get(i).getPerson().getFirstName() %> </td>
-                            <td> <%= accounts.get(i).getPerson().getLastName() %> </td>
-                            <td> <%= accounts.get(i).getRoles().iterator().next().getRoleType().toString() %> </td>
-                            <td> <%= accounts.get(i).getPerson().getEducation() %> </td>
-                            <td> <%= accounts.get(i).getAccountStatus() %> </td>
-                            <td> <%= accounts.get(i).getPerson().getHomeNumber() %> </td>
-                            <td> <%= accounts.get(i).getPerson().getCellPhoneNumber() %> </td>
-                        </tr>
-                        <%  } %>
+                            <% List<Account> accounts = (List<Account>) request.getAttribute("filteredAccounts");
+                                for (int i = 0; i < accounts.size(); i++) {
+                            %>
+                            <tr>
+                                <td> <%= i + 1 %> </td>
+                                <td> <%= accounts.get(i).getUsername() %> </td>
+                                <td> <%= accounts.get(i).getPerson().getFirstName() %> </td>
+                                <td> <%= accounts.get(i).getPerson().getLastName() %> </td>
+                                <td> <%= accounts.get(i).getPerson().getEducation() %> </td>
+                                <td> <%= accounts.get(i).getAccountStatus() %> </td>
+                                <td> <%= accounts.get(i).getPerson().getHomeNumber() %> </td>
+                                <td> <%= accounts.get(i).getPerson().getCellPhoneNumber() %> </td>
+                            </tr>
+                            <%  } %>
                         </tbody>
                     </table>
                 </div>

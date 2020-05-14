@@ -28,4 +28,9 @@ public class StudentService {
 
         return student.get().getCourses();
     }
+
+    public String getStudentNameByID(Long studentID) {
+        return studentRepository.findById(studentID).get().getAccount().getUsername();
+    }
+
 }

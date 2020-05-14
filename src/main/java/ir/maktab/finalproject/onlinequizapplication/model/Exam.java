@@ -1,9 +1,7 @@
 package ir.maktab.finalproject.onlinequizapplication.model;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -21,6 +19,9 @@ public class Exam {
     private Integer duration;
 
     private Double totalGrade;
+
+    @OneToMany(mappedBy = "exam")
+    private Set<ExamSheet> examSheets = new HashSet<>();
 
     @ManyToOne
     private Course course;
@@ -101,5 +102,11 @@ public class Exam {
         this.questions.remove(question.get());
         this.totalGrade -= question.get().getGrade();
     }
+
+    public void addExamSheet(ExamSheet sheet) {
+        this.examSheets.add(sheet);
+    }
+
+    public Set<ExamSheet> getExamSheets() { return examSheets; }
 }
 

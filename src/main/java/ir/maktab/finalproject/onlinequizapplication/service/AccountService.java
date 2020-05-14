@@ -9,7 +9,9 @@ import ir.maktab.finalproject.onlinequizapplication.mapper.PersonToPersonLoginCo
 import ir.maktab.finalproject.onlinequizapplication.mapper.PersonToPersonRegisterCompletionDtoMapper;
 import ir.maktab.finalproject.onlinequizapplication.model.Account;
 import ir.maktab.finalproject.onlinequizapplication.model.Person;
-import ir.maktab.finalproject.onlinequizapplication.repository.*;
+import ir.maktab.finalproject.onlinequizapplication.repository.AccountRepository;
+import ir.maktab.finalproject.onlinequizapplication.repository.PersonRepository;
+import ir.maktab.finalproject.onlinequizapplication.repository.RoleRepository;
 import ir.maktab.finalproject.onlinequizapplication.security.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -118,6 +120,10 @@ public class AccountService {
 
         else
             throw new AccountNotFoundException("There isn't any account with this id!");
+    }
+
+    public List<Account> getAllAccounts() {
+        return accountRepository.findAll();
     }
 
     public List<Account> getAllAccounts(AccountStatus accountStatus) {

@@ -2,16 +2,22 @@ package ir.maktab.finalproject.onlinequizapplication.controller;
 
 import ir.maktab.finalproject.onlinequizapplication.dto.*;
 import ir.maktab.finalproject.onlinequizapplication.enumeration.AccountStatus;
+import ir.maktab.finalproject.onlinequizapplication.enumeration.ExamSheetSubmissionStatus;
 import ir.maktab.finalproject.onlinequizapplication.enumeration.RoleType;
 import ir.maktab.finalproject.onlinequizapplication.exception.*;
 import ir.maktab.finalproject.onlinequizapplication.model.*;
 import ir.maktab.finalproject.onlinequizapplication.security.AuthenticationService;
 import ir.maktab.finalproject.onlinequizapplication.service.*;
+import ir.maktab.finalproject.onlinequizapplication.util.ExamSheetCacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -35,9 +41,11 @@ public class AccountController {
     private final TeachingAssistantService teachingAssistantService;
     @Autowired
     private final GuestService guestService;
+    @Autowired
+    private final ExamSheetService examSheetService;
 
 
-    public AccountController(AccountService accountService, TeacherService teacherService, ExamService examService, QuestionService questionService, CourseService courseService, StudentService studentService, TeachingAssistantService teachingAssistantService , GuestService guestService) {
+    public AccountController(AccountService accountService, TeacherService teacherService, ExamService examService, QuestionService questionService, CourseService courseService, StudentService studentService, TeachingAssistantService teachingAssistantService, GuestService guestService, ExamSheetService examSheetService) {
         this.accountService = accountService;
         this.teacherService = teacherService;
         this.examService = examService;
@@ -46,6 +54,7 @@ public class AccountController {
         this.studentService = studentService;
         this.teachingAssistantService = teachingAssistantService;
         this.guestService = guestService;
+        this.examSheetService = examSheetService;
     }
 
 
@@ -99,14 +108,17 @@ public class AccountController {
         return "account_not_found";
     }
 
-    @RequestMapping (value = "/signUp/signUpCheck", method = RequestMethod.POST)
+    @RequestMapping(value = "/WrongPasswordExceptionPage")
+    public static String showWrongPasswordExceptionPage() { return "wrong_password"; }
+
+    @PostMapping(value = "/signUp/signUpCheck")
     public String signUp (@ModelAttribute PersonRegisterDTO personRegisterDTO) throws AccountAlreadyExistsException, RoleNotFoundException {
         accountService.signUp(personRegisterDTO);
 
         return "redirect:/account/signIn";
     }
 
-    @RequestMapping (value = "/signIn/signInCheck", method = RequestMethod.POST)
+    @PostMapping(value = "/signIn/signInCheck")
     public String signIn (@ModelAttribute PersonLoginDTO personLoginDTO, ModelMap model) {
         try {
             PersonSignInCompletionDTO person = accountService.signIn(personLoginDTO);
@@ -136,8 +148,7 @@ public class AccountController {
         }
     }
 
-
-    @RequestMapping(value = "/managerPanel/filterUsers", method = RequestMethod.POST)
+    @PostMapping(value = "/managerPanel/filterUsers")
     public String filterUsers(@ModelAttribute AccountSearchDTO accountSearchDTO, ModelMap modelMap) {
         List<Account> accounts = accountService.getAllAccounts(accountSearchDTO);
         modelMap.addAttribute("filteredAccounts", accounts);
@@ -145,7 +156,15 @@ public class AccountController {
         return "user_filter_result";
     }
 
-    @RequestMapping (value = "/managerPanel/ListUnconfirmedAccounts", method = RequestMethod.GET)
+    @GetMapping (value = "/managerPanel/ListAllAccounts")
+    public String listAllAccounts(ModelMap modelMap) {
+        List<Account> allAccounts = accountService.getAllAccounts();
+        modelMap.addAttribute("all_accounts", allAccounts);
+
+        return "manager_panel_edit_all_accounts";
+    }
+
+    @GetMapping (value = "/managerPanel/ListUnconfirmedAccounts")
     public String listUnconfirmedAccounts(ModelMap modelMap) {
         List<Account> unconfirmedAccounts = accountService.getAllAccounts(AccountStatus.WAITING_CONFIRMATION);
         modelMap.addAttribute("unconfirmed_accounts", unconfirmedAccounts);
@@ -153,28 +172,28 @@ public class AccountController {
         return "manager_panel";
     }
 
-    @RequestMapping (value = "/managerPanel/confirmAccount", method = RequestMethod.POST)
+    @PostMapping (value = "/managerPanel/confirmAccount")
     public String confirmAccount(@ModelAttribute AccountConfirmationDTO accountConfirmationDto) throws AccountNotFoundException {
         accountService.confirm(accountConfirmationDto.getAccountID());
 
         return "redirect:/account/managerPanel/ListUnconfirmedAccounts";
     }
 
-    @RequestMapping (value = "/managerPanel/rejectAccount", method = RequestMethod.POST)
+    @PostMapping(value = "/managerPanel/rejectAccount")
     public String rejectAccount(@ModelAttribute AccountConfirmationDTO accountConfirmationDto) throws AccountNotFoundException {
         accountService.reject(accountConfirmationDto.getAccountID());
 
         return "redirect:/account/managerPanel/ListUnconfirmedAccounts";
     }
 
-    @RequestMapping(value = "/managerPanel/removeAccount", method = RequestMethod.POST)
+    @PostMapping(value = "/managerPanel/removeAccount")
     public String removeAccount(@ModelAttribute AccountConfirmationDTO accountConfirmationDTO) throws AccountNotFoundException {
         accountService.remove(accountConfirmationDTO.getAccountID());
 
         return "redirect:/account/managerPanel/ListUnconfirmedAccounts";
     }
 
-    @RequestMapping (value = "/managerPanel/editAccount", method = RequestMethod.POST)
+    @PostMapping(value = "/managerPanel/editAccount")
     public String editAccount(@ModelAttribute AccountEditDTO accountEditDTO) throws AccountNotFoundException {
         accountService.editAccount(accountEditDTO);
 
@@ -191,7 +210,7 @@ public class AccountController {
         return "teacher_panel";
     }
 
-    @RequestMapping(value = "/teacherPanel/viewCourses/viewExams", method = RequestMethod.POST)
+    @PostMapping(value = "/teacherPanel/viewCourses/viewExams")
     public String getCourseExams(@ModelAttribute CourseSearchByID course, ModelMap modelMap) throws CourseNotFoundException {
         List<Exam> exams = examService.getExamsByCourseID(course.getCourseID());
 
@@ -201,28 +220,28 @@ public class AccountController {
         return "teacher_panel";
     }
 
-    @RequestMapping(value = "/teacherPanel/viewCourses/viewExams/editExam", method = RequestMethod.POST)
+    @PostMapping(value = "/teacherPanel/viewCourses/viewExams/editExam")
     public String editExam(@ModelAttribute EditExamDTO editExamDTO) throws ExamNotFoundException {
         examService.editExam(editExamDTO);
 
         return "redirect:/account/teacherPanel/viewCourses";
     }
 
-    @RequestMapping(value = "/teacherPanel/viewCourses/viewExams/deleteExam", method = RequestMethod.POST)
-    public String deleteExam(@ModelAttribute DeleteExamDTO deleteExamDTO) throws ExamNotFoundException {
+    @PostMapping(value = "/teacherPanel/viewCourses/viewExams/deleteExam")
+    public String deleteExam(@ModelAttribute DeleteExamDTO deleteExamDTO) {
         examService.deleteExam(deleteExamDTO);
 
         return "redirect:/account/teacherPanel/viewCourses";
     }
 
-    @RequestMapping(value = "/teacherPanel/viewCourses/createExam", method = RequestMethod.POST)
+    @PostMapping(value = "/teacherPanel/viewCourses/createExam")
     public String createExam(@ModelAttribute CreateExamDTO createExamDTO) throws CourseNotFoundException {
         examService.createExam(createExamDTO);
 
         return "redirect:/account/teacherPanel/viewCourses";
     }
 
-    @RequestMapping(value = "/teacherPanel/viewCourses/viewExams/viewQuestions", method = RequestMethod.POST)
+    @PostMapping(value = "/teacherPanel/viewCourses/viewExams/viewQuestions")
     public String viewQuestions(@ModelAttribute ViewExamQuestionsDTO viewExamQuestionsDTO, ModelMap modelMap) throws ExamNotFoundException {
         Set<Question> questions = questionService.getExamQuestions(viewExamQuestionsDTO);
 
@@ -232,14 +251,21 @@ public class AccountController {
         return "exam_questions";
     }
 
-    @RequestMapping(value = "/teacherPanel/viewCourses/viewExams/viewQuestions/deleteQuestion", method = RequestMethod.POST)
+    @PostMapping(value = "/teacherPanel/viewCourses/viewExams/viewQuestions/deleteQuestion")
     public String removeQuestion(@ModelAttribute DeleteQuestionDTO questionDTO) throws ExamNotFoundException {
         examService.removeQuestion(questionDTO.getExamID(), questionDTO.getQuestionID());
 
         return "redirect:/account/teacherPanel/viewCourses";
     }
 
-    @RequestMapping(value = "/teacherPanel/viewCourses/viewExams/createDescriptiveQuestion", method = RequestMethod.POST)
+    @PostMapping(value = "/teacherPanel/viewCourses/viewExams/viewQuestions/editQuestion")
+    public String editQuestion(@ModelAttribute EditQuestionDTO editQuestionDTO) {
+        examService.editQuestion(editQuestionDTO);
+
+        return "redirect:/account/teacherPanel/viewCourses";
+    }
+
+    @PostMapping(value = "/teacherPanel/viewCourses/viewExams/createDescriptiveQuestion")
     public String createQuestion(@ModelAttribute AddDescriptiveQuestionDTO questionDTO) throws ExamNotFoundException {
         Question question = questionService.createQuestion(questionDTO);
         examService.addQuestion(questionDTO.getExamID(), question);
@@ -247,7 +273,7 @@ public class AccountController {
         return "redirect:/account/teacherPanel/viewCourses";
     }
 
-    @RequestMapping(value = "/teacherPanel/viewCourses/viewExams/createMultipleChoiceQuestion", method = RequestMethod.POST)
+    @PostMapping(value = "/teacherPanel/viewCourses/viewExams/createMultipleChoiceQuestion")
     public String createQuestion(@ModelAttribute AddMultipleChoiceQuestionDTO questionDTO) throws ExamNotFoundException {
         Question question = questionService.createQuestion(questionDTO);
         examService.addQuestion(questionDTO.getExamID(), question);
@@ -255,7 +281,7 @@ public class AccountController {
         return "redirect:/account/teacherPanel/viewCourses";
     }
 
-    @RequestMapping(value = "/teacherPanel/viewCourses/viewExams/viewArchivedTests", method = RequestMethod.GET)
+    @GetMapping(value = "/teacherPanel/viewCourses/viewExams/viewArchivedTests")
     public String viewArchivedTests(@ModelAttribute ViewArchivedTestsDTO archivedTestsDto, ModelMap modelMap) throws CourseNotFoundException {
         Set<Question> archivedQuestions = courseService.getArchivedQuestions(archivedTestsDto.getCourseID());
 
@@ -266,31 +292,115 @@ public class AccountController {
         return "course_archived_tests";
     }
 
-    @RequestMapping(value = "/teacherPanel/viewCourses/viewExams/addArchivedQuestionToExam", method = RequestMethod.GET)
+    @GetMapping(value = "/teacherPanel/viewCourses/viewExams/addArchivedQuestionToExam")
     public String addArchivedQuestionToExam(@ModelAttribute AddArchivedQuestionToExamDTO questionDto) throws QuestionNotFoundException, ExamNotFoundException {
-        examService.addQuestion(questionDto.getExamID(), questionService.find(questionDto.getQuestionID()));
+        Question question = questionService.findByID(questionDto.getQuestionID());
+        examService.addQuestion(questionDto.getExamID(), question);
 
         return "course_archived_tests";
+    }
+
+    @GetMapping(value = "/teacherPanel/viewCourses/viewExams/viewExamSheets")
+    public String viewExamSheets(@ModelAttribute ViewExamSheetsDTO viewExamSheetsDTO, ModelMap modelMap) throws ExamNotFoundException {
+        Exam exam = examService.getExamByExamID(viewExamSheetsDTO.getExamID());
+        modelMap.addAttribute("exam_sheets", exam.getExamSheets());
+
+        return "course_exam_sheet";
+    }
+
+    @GetMapping(value = "/teacherPanel/viewCourses/viewExams/viewExamResults")
+    public String viewExamResults(@ModelAttribute ViewExamResultsDTO viewExamResultsDTO, ModelMap modelMap) throws ExamNotFoundException {
+        List<ExamSheet> examSheets = examSheetService.findAllByExam_IdOrderById(viewExamResultsDTO.getExamID());
+
+        modelMap.addAttribute("num_of_participants", examSheetService.countByExam_Id(viewExamResultsDTO.getExamID()));
+
+        List<Double> grades = new ArrayList<>();
+        for(ExamSheet examSheet: examSheets)
+            grades.add(examSheet.getObtainedScore());
+        modelMap.addAttribute("exam_results", grades);
+
+        List<String> studentsName = new ArrayList<>();
+        for(ExamSheet examSheet: examSheets)
+            studentsName.add(studentService.getStudentNameByID(examSheet.getStudentID()));
+        modelMap.addAttribute("participants", studentsName);
+
+        return "course_exam_sheet";
+    }
+
+    @GetMapping(value = "/teacherPanel/viewCourses/viewExams/viewExamSheets/viewSheetQuestions")
+    public String viewSheetQuestions(@ModelAttribute ViewSheetQuestionsDTO viewSheetQuestionsDTO, ModelMap modelMap) {
+        List<QuestionItem> questionItems = examSheetService.getQuestionItemsByExamSheetID(viewSheetQuestionsDTO.getExamSheetID());
+
+        modelMap.addAttribute("sheet_questions", questionItems);
+        modelMap.addAttribute("examSheetID", viewSheetQuestionsDTO.getExamSheetID());
+
+        return "course_exam_sheet";
+    }
+
+    @GetMapping(value = "/teacherPanel/viewCourses/viewExams/viewExamSheets/viewSheetQuestions/markQuestion")
+    public String markQuestion(@ModelAttribute MarkExamSheetDTO markExamSheet) {
+        examSheetService.setQuestionGrade(markExamSheet.getExamSheetID(), markExamSheet.getQuestionItemID(), markExamSheet.getGrade());
+
+        return "course_exam_sheet";
     }
 
     @RequestMapping(value = "/studentPanel/viewCourses")
     public String viewStudentCourses(ModelMap modelMap) throws PersonNotFoundException {
         Long studentID = AuthenticationService.getLoginUser().getPersonID();
-
         Set<Course> courses = studentService.getStudentCourses(studentID);
         modelMap.addAttribute("courses", courses);
 
         return "student_panel";
     }
 
-    @RequestMapping(value = "/studentPanel/viewCourses/viewExams", method = RequestMethod.POST)
-    public String getStudentExams(@ModelAttribute CourseSearchByID course, ModelMap modelMap) throws CourseNotFoundException {
-        List<Exam> exams = examService.getExamsByCourseID(course.getCourseID());
+    @RequestMapping(value = "/studentPanel/viewExamResults")
+    public String viewStudentExamResults(ModelMap modelMap) {
+        Long studentID = AuthenticationService.getLoginUser().getPersonID();
+        List<ExamSheet> examSheets = examSheetService.findAllByStudentIDAndSubmissionStatus(studentID, ExamSheetSubmissionStatus.Submitted);
+        modelMap.addAttribute("exam_results", examSheets);
 
-        modelMap.addAttribute("courseID", course.getCourseID());
+        return "student_panel";
+    }
+
+    @PostMapping(value = "/studentPanel/viewCourses/viewExams")
+    public String viewStudentExams(@ModelAttribute ViewCourseExamsDTO viewCourseExamsDto, ModelMap modelMap) throws CourseNotFoundException {
+        List<Exam> exams = examService.getExamsByStudent(viewCourseExamsDto.getCourseID(), viewCourseExamsDto.getStudentID());
+        modelMap.addAttribute("courseID", viewCourseExamsDto.getCourseID());
         modelMap.addAttribute("exams", exams);
 
         return "student_panel";
+    }
+
+    @PostMapping(value = "/studentPanel/viewCourses/viewExams/startExam")
+    public String startExam (@ModelAttribute StartExamDTO startExamDTO, ModelMap modelMap) {
+        ExamSheet examSheet = examService.startExam(startExamDTO);
+        ExamSheetCacheManager.setCurrentQuestionNo(0);
+        ExamSheetCacheManager.setExamSheet(examSheet);
+
+        modelMap.addAttribute("question", ExamSheetCacheManager.getExamSheet().getQuestionItems().get(0));
+
+        return "exam_page";
+    }
+
+    @PostMapping(value = "studentPanel/viewCourses/viewExams/submitExamSheet")
+    public String submitExamSheet() {
+        examSheetService.submitExamsSheet(ExamSheetCacheManager.getExamSheet());
+
+        return "redirect:/account/studentPanel";
+    }
+
+    @PostMapping(value = "/studentPanel/viewCourses/viewExams/changeQuestion")
+    public String changeQuestion(@ModelAttribute ChangeExamQuestionDTO changeExamQuestionDTO, ModelMap modelMap) {
+        examSheetService.saveCurrentResponse(
+                ExamSheetCacheManager.getExamSheet(),
+                ExamSheetCacheManager.getCurrentQuestionNo(),
+                changeExamQuestionDTO.getResponse()
+        );
+
+        ExamSheetCacheManager.changeQuestion(changeExamQuestionDTO);
+        modelMap.addAttribute("question", ExamSheetCacheManager.getExamSheet().getQuestionItems().get(ExamSheetCacheManager.getCurrentQuestionNo()));
+
+        return "exam_page";
     }
 
     @RequestMapping(value = "/guestPanel/viewCourses")
@@ -309,3 +419,4 @@ public class AccountController {
         return "teaching_assistant_panel";
     }
 }
+

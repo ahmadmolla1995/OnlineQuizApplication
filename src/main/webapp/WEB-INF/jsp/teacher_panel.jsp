@@ -146,7 +146,7 @@
                                                     '<%= exam.getDescription() %>',
                                                     '<%= exam.getDuration() %>'
                                                     )">
-                                        Edit Details
+                                        Edit
                                     </button>
 
                                     <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="editExamExplanationModal" aria-labelledby="editModal">
@@ -184,13 +184,13 @@
                                 <td>
                                     <form action="viewExams/viewQuestions" method="post">
                                         <input type="hidden" id="viewExamsQuestion" name="examID" value="<%= exam.getId() %>">
-                                        <button type="submit" class="btn btn-primary">View Questions</button>
+                                        <button type="submit" class="btn btn-primary">View</button>
                                     </form>
                                 </td>
 
                                 <td>
                                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addDescriptiveQuestionModal" onclick="setExamID('<%= exam.getId() %>')">
-                                        Descriptive Question
+                                        Descriptive
                                     </button>
 
                                     <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="addDescriptiveQuestionModal" aria-labelledby="descriptiveQuestionModal">
@@ -226,7 +226,7 @@
 
                                 <td>
                                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addMultipleChoiceQuestionModal" onclick="setExamID('<%= exam.getId() %>')">
-                                        MultipleChoice Question
+                                        MultipleChoice
                                     </button>
 
                                     <div class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" id="addMultipleChoiceQuestionModal" aria-labelledby="multipleChoiceQuestionModal">
@@ -266,10 +266,23 @@
                                     <form action="viewExams/viewArchivedTests" method="get">
                                         <input type="hidden" id="archivedTestExamID" name="examID" value="<%= exam.getId() %>">
                                         <input type="hidden" id="archivedTestCourseID" name="courseID" value="<%= request.getAttribute("courseID") %>">
-                                        <button type="submit" class="btn btn-primary">Archived Tests</button>
+                                        <button type="submit" class="btn btn-primary">Archived</button>
                                     </form>
                                 </td>
 
+                                <td>
+                                    <form action="viewExams/viewExamSheets" method="get">
+                                        <input type="hidden" name="examID" value="<%= exam.getId() %>">
+                                        <button type="submit" class="btn btn-primary">ExamSheets</button>
+                                    </form>
+                                </td>
+
+                                <td>
+                                    <form action="viewExams/viewExamResults" method="get">
+                                        <input type="hidden" name="examID" value="<%= exam.getId() %>">
+                                        <button type="submit" class="btn btn-primary">Results</button>
+                                    </form>
+                                </td>
                             </tr>
                             <%      }
                             }
@@ -279,7 +292,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 
     <script src="/assets/js/jquery-3.3.1.slim.min.js"></script>

@@ -1,7 +1,9 @@
 <%@ page import="ir.maktab.finalproject.onlinequizapplication.model.Course" %>
-<%@ page import="java.util.Set" %>
 <%@ page import="ir.maktab.finalproject.onlinequizapplication.model.Exam" %>
+<%@ page import="ir.maktab.finalproject.onlinequizapplication.security.AuthenticationService" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.util.Set" %>
+<%@ page import="ir.maktab.finalproject.onlinequizapplication.model.ExamSheet" %>
 <%@ page contentType="text/html; charset=UTF-8" %>
 
 
@@ -23,6 +25,7 @@
                 <ul class="navbar-nav">
                     <li class="nav-item">
                         <a class="nav-link" href="studentPanel/viewCourses">ViewCourses<span class="sr-only">(current)</span></a>
+                        <a class="nav-link" href="studentPanel/viewExamResults">ViewExamResults<span class="sr-only">(current)</span></a>
                     </li>
                 </ul>
             </div>
@@ -57,6 +60,7 @@
                                 <td>
                                     <form action="viewCourses/viewExams" method="post">
                                         <input type="hidden" name="courseID" value="<%= course.getId() %>">
+                                        <input type="hidden" name="studentID" value="<%= AuthenticationService.getLoginUser().getPersonID() %>">
                                         <button type="submit" class="btn btn-primary">View Exams</button>
                                     </form>
                                 </td>
@@ -87,16 +91,49 @@
                         <tbody>
                             <%
                                 List<Exam> exams = (List<Exam>) request.getAttribute("exams");
-                                for (Exam exam: exams) {
+                                    for (Exam exam: exams) {
+                                %>
+                                <tr>
+                                    <td> <%= exam.getTitle() %> </td>
+                                    <td> <%= exam.getDescription() %></td>
+                                    <td> <%= exam.getDuration() %></td>
+                                    <td> <%= exam.getTotalGrade() %> </td>
+                                    <td>
+                                        <form action="viewExams/startExam" method="post">
+                                            <input type="hidden" name="examID" value="<%= exam.getId() %>">
+                                            <input type="hidden" name="studentID" value="<%= AuthenticationService.getLoginUser().getPersonID() %>">
+                                            <button type="submit" class="btn btn-primary">Start</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <%      }
+                                }
+                                %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <% if (request.getAttribute("exam_results") != null) { %>
+                <div class="table-responsive bg-transparent" style="margin-top: 30px">
+                    <table class="table table-bordered table-dark">
+                        <thead>
+                            <tr>
+                                <th scope="col">Course</th>
+                                <th scope="col">ExamName</th>
+                                <th scope="col">Grade</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <%  List<ExamSheet> examSheets = (List<ExamSheet>) request.getAttribute("exam_results");
+                                for (ExamSheet examSheet: examSheets) {
                             %>
                             <tr>
-                                <td> <%= exam.getTitle() %> </td>
-                                <td> <%= exam.getDescription() %></td>
-                                <td> <%= exam.getDuration() %></td>
-                                <td> <%= exam.getTotalGrade() %> </td>
+                                <td> <%= examSheet.getExam().getCourse().getTitle() %> </td>
+                                <td> <%= examSheet.getExam().getTitle() %> </td>
+                                <td> <%= examSheet.getObtainedScore() %> </td>
                             </tr>
                             <%      }
-                            }
+                                }
                             %>
                         </tbody>
                     </table>
@@ -104,7 +141,6 @@
             </div>
         </div>
     </div>
-
 
     <script src="/assets/js/jquery-3.3.1.slim.min.js"></script>
     <script src="/assets/js/jquery-3.4.1.min.js"></script>

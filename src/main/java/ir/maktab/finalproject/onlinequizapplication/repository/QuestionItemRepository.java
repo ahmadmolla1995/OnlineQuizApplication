@@ -1,10 +1,10 @@
 package ir.maktab.finalproject.onlinequizapplication.repository;
 
-import ir.maktab.finalproject.onlinequizapplication.model.Exam;
+import ir.maktab.finalproject.onlinequizapplication.model.QuestionItem;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface ExamRepository extends JpaRepository<Exam, Long> {
+public interface QuestionItemRepository extends JpaRepository<QuestionItem, Long> {
 }

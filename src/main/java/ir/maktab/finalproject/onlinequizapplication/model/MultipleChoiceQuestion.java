@@ -18,13 +18,13 @@ public class MultipleChoiceQuestion extends Question {
     public MultipleChoiceQuestion() {
         super();
     }
-    
+
     public MultipleChoiceQuestion(Long id, String title, String problemDescription, Double grade, String options, Long correctResponse) {
         super(id, title, problemDescription, grade);
         this.options = options;
         this.correctResponse = correctResponse;
     }
-
+    
 
     @Override
     public Long getId() { return id; }
